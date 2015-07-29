@@ -1,0 +1,22 @@
+{
+    "name": "ailme/helper",
+    "description": "Helper file",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Alexandr Tumaykin",
+            "email": "alexandrtumaykin@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "version": "1.0.0",
+    "require": {
+        "php": ">=5.5.0"
+    },
+    "autoload": {
+        "files": [
+            "helper.php"
+        ]
+    }
+}
