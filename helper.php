@@ -17,7 +17,7 @@ if (!function_exists("d")) {
     {
         $caller = debug_backtrace();
         $caller = array_shift($caller);
-        echo 'File: ' . $caller['file'] . ' / Line: ' . $caller['line'];
+        echo 'File: ' . $caller['file'] . ' / Line: ' . $caller['line'] . RN;
         array_map(function ($x) {
             var_dump($x);
         }, $caller['args']);
