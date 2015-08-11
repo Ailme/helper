@@ -5,6 +5,7 @@
  
 define('DS', '/');
 define('RN', "\r\n");
+define('EOL',(PHP_SAPI == 'cli') ? PHP_EOL : '<br />');
 define('TAB', "\t");
 define('DB_YES', "Y");
 define('DB_NO', "N");
@@ -37,6 +38,40 @@ if (!function_exists("dd")) {
         echo '<pre>';
         array_map(function ($x) {
             var_dump($x);
+        }, $caller['args']);
+        echo '</pre>';
+        die;
+    }
+}
+
+if (!function_exists("p")) {
+    /**
+     * Debug function
+     */
+    function p()
+    {
+        $caller = debug_backtrace();
+        $caller = array_shift($caller);
+        echo 'File: ' . $caller['file'] . ' / Line: ' . $caller['line'] . RN;
+        array_map(function ($x) {
+            print_r($x);
+        }, $caller['args']);
+        die;
+    }
+}
+
+if (!function_exists("pp")) {
+    /**
+     * Debug function
+     */
+    function pp()
+    {
+        $caller = debug_backtrace();
+        $caller = array_shift($caller);
+        echo '<code>File: ' . $caller['file'] . ' / Line: ' . $caller['line'] . '</code>';
+        echo '<pre>';
+        array_map(function ($x) {
+            print_r($x);
         }, $caller['args']);
         echo '</pre>';
         die;
@@ -94,69 +129,27 @@ function getMemoryUsage($size = 'M')
 function translit($str)
 {
     $tr = [
-        "А" => "A",
-        "Б" => "B",
-        "В" => "V",
-        "Г" => "G",
-        "Д" => "D",
-        "Е" => "E",
-        "Ж" => "J",
-        "З" => "Z",
-        "И" => "I",
-        "Й" => "Y",
-        "К" => "K",
-        "Л" => "L",
-        "М" => "M",
-        "Н" => "N",
-        "О" => "O",
-        "П" => "P",
-        "Р" => "R",
-        "С" => "S",
-        "Т" => "T",
-        "У" => "U",
-        "Ф" => "F",
-        "Х" => "H",
-        "Ц" => "TS",
-        "Ч" => "CH",
-        "Ш" => "SH",
-        "Щ" => "SCH",
-        "Ъ" => "",
-        "Ы" => "YI",
-        "Ь" => "",
-        "Э" => "E",
-        "Ю" => "YU",
-        "Я" => "YA",
-        "а" => "a",
-        "б" => "b",
-        "в" => "v",
-        "г" => "g",
-        "д" => "d",
-        "е" => "e",
-        "ж" => "j",
-        "з" => "z",
-        "и" => "i",
-        "й" => "y",
-        "к" => "k",
-        "л" => "l",
-        "м" => "m",
-        "н" => "n",
-        "о" => "o",
-        "п" => "p",
-        "р" => "r",
-        "с" => "s",
-        "т" => "t",
-        "у" => "u",
-        "ф" => "f",
-        "х" => "h",
-        "ц" => "ts",
-        "ч" => "ch",
-        "ш" => "sh",
-        "щ" => "sch",
-        "ъ" => "y",
-        "ы" => "yi",
-        "ь" => "'",
-        "э" => "e",
-        "ю" => "yu",
+        "А" => "A", "Б" => "B", "В" => "V",
+        "Г" => "G", "Д" => "D", "Е" => "E",
+        "Ж" => "J", "З" => "Z", "И" => "I",
+        "Й" => "Y", "К" => "K", "Л" => "L",
+        "М" => "M", "Н" => "N", "О" => "O",
+        "П" => "P", "Р" => "R", "С" => "S",
+        "Т" => "T", "У" => "U", "Ф" => "F",
+        "Х" => "H", "Ц" => "TS", "Ч" => "CH",
+        "Ш" => "SH", "Щ" => "SCH", "Ъ" => "",
+        "Ы" => "YI", "Ь" => "", "Э" => "E",
+        "Ю" => "YU", "Я" => "YA", "а" => "a",
+        "б" => "b", "в" => "v", "г" => "g",
+        "д" => "d", "е" => "e", "ж" => "j",
+        "з" => "z", "и" => "i", "й" => "y",
+        "к" => "k", "л" => "l", "м" => "m",
+        "н" => "n", "о" => "o", "п" => "p",
+        "р" => "r", "с" => "s", "т" => "t",
+        "у" => "u", "ф" => "f", "х" => "h",
+        "ц" => "ts", "ч" => "ch", "ш" => "sh",
+        "щ" => "sch", "ъ" => "y", "ы" => "yi",
+        "ь" => "'", "э" => "e", "ю" => "yu",
         "я" => "ya",
     ];
 
@@ -173,18 +166,24 @@ function translit($str)
  */
 function formatTime($t, $format = 'hh:mm')
 {
+    if (function_exists('gmp_sign')) {
+        $sign = gmp_sign($t);
+    } else {
+        $sign = $t > 0 ? 1 : $t == 0 ? 0 : -1;
+    }
+    
     $s = abs($t) % 60;
     $m = (abs($t) / 60) % 60;
-    $h = floor(abs($t) / 3600) * gmp_sign($t);
+    $h = floor(abs($t) / 3600) * $sign;
     $d = floor(abs($t) / 3600 / 24);
 
     switch ($format) {
         case 'd hh:mm:ss':
-            $h = floor(abs($t) / 3600) % 24 * gmp_sign($t);
+            $h = floor(abs($t) / 3600) % 24 * $sign;
 
             return sprintf("%dд %02d:%02d:%02d", $d, $h, $m, $s);
         case 'd hh:mm':
-            $h = floor(abs($t) / 3600) % 24 * gmp_sign($t);
+            $h = floor(abs($t) / 3600) % 24 * $sign;
 
             return sprintf("%dд %02d:%02d", $d, $h, $m);
         case 'hh:mm:ss':
