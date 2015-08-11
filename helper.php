@@ -20,7 +20,7 @@ if (!function_exists("d")) {
         $caller = array_shift($caller);
         echo 'File: ' . $caller['file'] . ' / Line: ' . $caller['line'] . RN;
         array_map(function ($x) {
-            var_dump($x);
+            var_dump($x) . EOL;
         }, $caller['args']);
         die;
     }
@@ -54,7 +54,7 @@ if (!function_exists("p")) {
         $caller = array_shift($caller);
         echo 'File: ' . $caller['file'] . ' / Line: ' . $caller['line'] . RN;
         array_map(function ($x) {
-            print_r($x);
+            print_r($x) . EOL;
         }, $caller['args']);
         die;
     }
