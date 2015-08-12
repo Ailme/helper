@@ -3,12 +3,12 @@
  * User: Alexandr Tumaykin <alexandrtumaykin@gmail.com>
  */
  
-define('DS', '/');
-define('RN', "\r\n");
-define('EOL',(PHP_SAPI == 'cli') ? PHP_EOL : '<br />');
-define('TAB', "\t");
-define('DB_YES', "Y");
-define('DB_NO', "N");
+defined('DS') or define('DS', '/');
+defined('RN') or define('RN', "\r\n");
+defined('EOL') or define('EOL',(PHP_SAPI == 'cli') ? PHP_EOL : '<br />');
+defined('TAB') or define('TAB', "\t");
+defined('DB_YES') or define('DB_YES', "Y");
+defined('DB_NO') or define('DB_NO', "N");
 
 if (!function_exists("d")) {
     /**
