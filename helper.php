@@ -171,7 +171,7 @@ function formatTime($t, $format = 'hh:mm')
     if (function_exists('gmp_sign')) {
         $sign = gmp_sign($t);
     } else {
-        $sign = $t > 0 ? 1 : $t == 0 ? 0 : -1;
+        $sign = $t > 0 ? 1 : ($t == 0 ? 0 : -1);
     }
     
     $s = abs($t) % 60;
